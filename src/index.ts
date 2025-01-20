@@ -1,4 +1,5 @@
 import {
+  GenerateContentRequest,
   HarmBlockThreshold,
   HarmCategory,
   VertexAI,
@@ -27,15 +28,18 @@ const generativeModel = vertexAI.getGenerativeModel({
   },
 })
 
-async function generateContent() {
-  const request = {
+async function generateContentStream() {
+  const request: GenerateContentRequest = {
     contents: [
       { role: "user", parts: [{ text: "Tell me a Star Trek fact." }] },
     ],
+    systemInstruction:
+      "Return a response in Markdown, with every second word in bold.",
   }
-  const result = await generativeModel.generateContent(request)
-  const response = result.response
-  console.log("Response: ", JSON.stringify(response))
+  const streamingResult = await generativeModel.generateContentStream(request)
+  for await (const chunk of streamingResult.stream) {
+    console.log(chunk?.candidates?.[0]?.content?.parts?.[0]?.text)
+  }
 }
 
-generateContent()
+generateContentStream()
