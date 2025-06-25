@@ -1,4 +1,5 @@
 import { AnthropicVertex } from "@anthropic-ai/vertex-sdk"
+import { BadRequestError } from "@anthropic-ai/vertex-sdk/core/error.mjs"
 import * as readline from "readline/promises"
 
 const projectId = "cross-camp-ai-enablement"
@@ -12,17 +13,25 @@ class Agent {
 
   async run() {
     const userMessage = await this.getUserMessage()
-    const result = await this.client.messages.create({
-      model: "claude-3-7-sonnet@20250219",
-      max_tokens: 100,
-      messages: [
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
-    })
-    console.log(JSON.stringify(result, null, 2))
+    try {
+      const result = await this.client.messages.create({
+        model: "claude-3-7-sonnet@20250219",
+        max_tokens: 100,
+        messages: [
+          {
+            role: "user",
+            content: userMessage,
+          },
+        ],
+      })
+      console.log(JSON.stringify(result, null, 2))
+    } catch (error) {
+      if (error instanceof BadRequestError) {
+        console.error("BadRequestError:", error.message)
+      } else {
+        console.error("Error:", error)
+      }
+    }
   }
 }
 
