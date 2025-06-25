@@ -5,9 +5,9 @@ import {
   VertexAI,
 } from "@google-cloud/vertexai"
 
-const project = "cross-camp-pko-enablement"
+const project = "cross-camp-ai-enablement"
 const location = "us-central1"
-const textModel = "gemini-1.5-flash-002"
+const textModel = "gemini-2.0-flash-lite-001"
 
 const vertexAI = new VertexAI({ project, location })
 
@@ -31,14 +31,21 @@ const generativeModel = vertexAI.getGenerativeModel({
 async function generateContentStream() {
   const request: GenerateContentRequest = {
     contents: [
-      { role: "user", parts: [{ text: "Tell me a Star Trek fact." }] },
+      {
+        role: "user",
+        parts: [{ text: "Tell me some facts about the Klingon language." }],
+      },
     ],
-    systemInstruction:
-      "Return a response in Markdown, with every second word in bold.",
+    systemInstruction: "",
   }
+
   const streamingResult = await generativeModel.generateContentStream(request)
   for await (const chunk of streamingResult.stream) {
-    console.log(chunk?.candidates?.[0]?.content?.parts?.[0]?.text)
+    console.log(
+      chunk?.candidates?.[0]?.content?.parts?.[0]?.text,
+      "\n================",
+    )
+    // console.log(chunk, "\n================")
   }
 }
 
