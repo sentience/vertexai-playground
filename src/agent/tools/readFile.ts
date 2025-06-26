@@ -26,15 +26,13 @@ export const readFileTool: ToolDefinition = {
 
     // Check if file exists (using sync check for simplicity)
     if (!existsSync(resolvedPath)) {
-      throw new Error(`Error: File not found at path ${path}`)
+      throw new Error(`File not found at path ${path}`)
     }
 
     try {
       return fs.readFile(resolvedPath, "utf-8")
     } catch (error) {
-      throw new Error(
-        `Error reading file: ${error instanceof Error ? error.message : String(error)}`,
-      )
+      throw new Error(error instanceof Error ? error.message : String(error))
     }
   },
 }

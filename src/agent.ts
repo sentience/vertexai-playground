@@ -1,7 +1,7 @@
 import { AnthropicVertex } from "@anthropic-ai/vertex-sdk"
 import * as readline from "readline/promises"
 import { Agent } from "./agent/agent.js"
-import { readFileTool } from "./agent/tools/index.js"
+import { listFilesTool, readFileTool } from "./agent/tools/index.js"
 
 const projectId = "cross-camp-ai-enablement"
 const region = "us-east5"
@@ -14,7 +14,7 @@ async function main() {
     region,
   })
 
-  const tools = [readFileTool]
+  const tools = [listFilesTool, readFileTool]
 
   const agent = new Agent(client, getUserMessage, getUserConsent, tools)
 
