@@ -1,3 +1,4 @@
-// Export all tools from this file
-export { readFileTool } from "./readFile.js"
-export { listFilesTool } from "./listFiles.js"
+import { readFileTool } from "./readFile.js"
+import { listFilesTool } from "./listFiles.js"
+import { editFileTool } from "./editFile.js"
+export default [readFileTool, listFilesTool, editFileTool]
