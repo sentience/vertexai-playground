@@ -130,22 +130,7 @@ export class Agent {
   ): Anthropic.MessageParam {
     return {
       role: message.role,
-      content: message.content
-        .map((c) => {
-          switch (c.type) {
-            case "text":
-              return {
-                type: "text" as const,
-                text: c.text,
-              }
-            case "tool_use":
-              return c
-            default:
-              // Handle other content types if needed
-              return null
-          }
-        })
-        .filter((c) => !!c),
+      content: message.content,
     }
   }
 }
