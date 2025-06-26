@@ -7,7 +7,8 @@ export class Agent {
   constructor(
     private client: AnthropicVertex,
     private getUserMessage: () => Promise<string>,
-    private getUserConsent: () => Promise<boolean>,
+    private getToolConsent: (toolDescription: string) => Promise<boolean>,
+    private showAgentMessage: (message: string) => void,
     private tools: ToolDefinition[],
   ) {}
 
@@ -35,7 +36,7 @@ export class Agent {
         for (const message of result.content) {
           switch (message.type) {
             case "text":
-              console.log(`\n\u001b[93mClaude\u001b[0m: ${message.text}\n`)
+              this.showAgentMessage(message.text)
               break
             case "tool_use":
               const result = await this.executeTool(
@@ -98,10 +99,9 @@ export class Agent {
       }
     }
 
-    console.log(
-      `\n\u001b[92mTool\u001b[0m: ${name}(${JSON.stringify(input)})\n`,
-    )
-    if (!(await this.getUserConsent()))
+    const toolDescription = `${name}(${JSON.stringify(input)})`
+
+    if (!(await this.getToolConsent(toolDescription)))
       return {
         tool_use_id: id,
         type: "tool_result",

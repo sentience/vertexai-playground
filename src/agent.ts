@@ -14,7 +14,13 @@ async function main() {
     region,
   })
 
-  const agent = new Agent(client, getUserMessage, getUserConsent, tools)
+  const agent = new Agent(
+    client,
+    getUserMessage,
+    getToolConsent,
+    showAgentMessage,
+    tools,
+  )
 
   await agent.run()
 }
@@ -35,17 +41,22 @@ async function getUserMessage(): Promise<string> {
   return userMessage
 }
 
-async function getUserConsent(): Promise<boolean> {
+async function getToolConsent(toolDescription: string): Promise<boolean> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   })
 
   const consent = await rl.question(
-    "\u001b[93mClaude\u001b[0m: Do you want to continue? [yes]: ",
+    `\n\u001b[92mTool request\u001b[0m: ${toolDescription}\n` +
+      "\u001b[93mClaude\u001b[0m: Do you want to continue? [yes]: ",
   )
 
   rl.close()
 
   return consent === "" || consent.toLowerCase() === "yes"
+}
+
+function showAgentMessage(message: string): void {
+  console.log(`\n\u001b[93mClaude\u001b[0m: ${message}\n`)
 }
